@@ -4,6 +4,10 @@ EXPOSE 80
 EXPOSE 443
 
 FROM microsoft/dotnet:2.2-sdk AS build
+RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt-get install -yq nodejs build-essential
+RUN npm install -g npm
+RUN npm install -g @angular/cli
 WORKDIR /src
 COPY ["dotnet-angular-sample.csproj", ""]
 RUN dotnet restore "dotnet-angular-sample.csproj"
