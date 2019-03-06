@@ -1,0 +1,37 @@
+trigger: none
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+variables:
+  imageName: 'dotnetcore-angular-sample'
+  imageTag: '$(build.buildId)'
+  fullImageName: '$(imageName):$(imageTag)'
+  containerRegistry: 'mjisaak.azurecr.io'
+  serviceConnection: 'playground'
+
+steps:
+- task: Docker@1
+  displayName: 'Containerize the application'
+  inputs:
+    azureSubscriptionEndpoint: $(serviceConnection)
+    azureContainerRegistry: $(containerRegistry)
+    dockerFile: '**/Dockerfile'
+    imageName: '$(fullImageName)'
+    includeLatestTag: true
+
+- task: Docker@1
+  displayName: 'Push image'
+  inputs:
+    azureSubscriptionEndpoint: $(serviceConnection)
+    azureContainerRegistry: $(containerRegistry)
+    command: 'Push an image'
+    imageName: '$(fullImageName)'
+
+- task: Docker@1
+  displayName: 'Push latest image'
+  inputs:
+    azureSubscriptionEndpoint: $(serviceConnection)
+    azureContainerRegistry: $(containerRegistry)
+    command: 'Push an image'
+    imageName: '$(imageName):latest'
